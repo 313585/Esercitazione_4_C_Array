@@ -6,43 +6,60 @@
 
 using namespace std;
 
-bool ImportVectors(const string& inputFilePath,size_t& n,double*& w,double*& r, unsigned int &S)
+bool ImportVectors(const string& inputFilePath,size_t& n,double*& w,double*& r, double& S)
 {
-    ifstream input(inputFilePath);
-	if(input.fail())
-	  return false;
-  std::string tmp; //stringa temporanea
-  getline(input, tmp, ';'); // prima riga 
-  input>>S;
-  getline(input, tmp,';'); //seconda riga
-  input>>n;
+  ifstream input(inputFilePath);
+  if(input.fail())
+	return false;
+  string riga;
+  char lettera;
+  char separatore;
+  
+  // lettura prima riga
+  getline(input, riga);
+  stringstream str1(riga);
+  str1>>lettera>>separatore>>S;
+  
+  // lettura seconda riga
+  getline(input,riga);
+  stringstream str2(riga);
+  str2>>lettera>>separatore>>n;
+  
+  // salto riga: "w;r"
+  string tmp;
+  getline(input, tmp);
   
   w= new double[n];
   r= new double[n];
-  char c;
-  unsigned int i=0;
+  string linea;
   
-  getline(input, tmp);
-  
-  while(getline(input, tmp) && i<n)
+  for(unsigned int i=0; i<n; i++)
   {
-	  stringstream line3(tmp); //terza riga
-	  line3>>w[i]>>c>>r[i];
-	  i++;
+	getline(input, linea);
+	stringstream str3(linea);
+	str3>>w[i]>>separatore>>r[i];
   }
   return true;
 }
 
-double DotProduct(const size_t& n, const double* const& w, const double* const& r, const unsigned int& S, double &V)
+double DotProduct(const size_t& n, const double* const& w, const double* const& r)
 {
-	double result=0;
-	for (unsigned int i=0; i<n; i++)
-		result+= w[i]*r[i];
-	V=(1+result)*S;
-	return result;
+		double prodotto=0.0;
+		for (unsigned int i=0; i<n; i++)
+			prodotto+= w[i]*r[i];
+	return prodotto;
 }
 
-bool ExportResult(const string& outputFilePath, const size_t& n, const double* const& w, const double* const& r, const unsigned int &S, const double &DP, const double &V)
+double ValuePortfolio(const size_t& n, const double& S, const double* const& w, const double* const& r)
+{
+	double V=0.0;
+	for (unsigned int i=0; i<n; i++)
+		V += w[i]*(1+r[i]);
+	V=V*S;
+	return V;
+}
+
+bool ExportResult(const string& outputFilePath, const size_t& n, const double* const& w, const double* const& r, const double& S, const double& V, const double& prodotto)
 {
 	ofstream output(outputFilePath);
 	if(!output)
@@ -57,8 +74,9 @@ bool ExportResult(const string& outputFilePath, const size_t& n, const double* c
 		output<<r[i]<<" ";
 	output<<" ]\n";
 	
-	output<<" Rate of return of the portfolio: "<<setprecision(4)<<DP<<endl;
+	output<<" Rate of return of the portfolio: "<<setprecision(4)<<prodotto<<endl;
 	output<<"V: "<<setprecision(2)<<V<<endl;
+	output.close();
 	return true;
 	
 }

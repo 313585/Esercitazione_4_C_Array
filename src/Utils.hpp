@@ -1,9 +1,12 @@
 #pragma once
 #include <iostream>
-#include <string>
 
-bool ImportVectors(const std::string& inputFilePath, size_t& n, double*& w, double*& r, unsigned int &S);
+using namespace std;
 
-double DotProduct (const size_t& n, const double* const& w, const double* const& r, const unsigned int &S, double &V);
+bool ImportVectors(const string& inputFilePath, size_t& n, double*& w, double*& r, double& S);
 
-bool ExportResult (const std::string& outputFilePath, const size_t& n, const double* const& w, const double* const& r, const unsigned int &S, const double &DP, const double &V);
+double DotProduct (const size_t& n, const double* const& w, const double* const& r);
+
+double ValuePortfolio(const size_t& n, const double& S, const double* const& w, const double* const& r);
+
+bool ExportResult (const string& outputFilePath, const size_t& n, const double* const& w, const double* const& r, const double& S, const double& V, const double& prodotto);

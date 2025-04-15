@@ -6,21 +6,23 @@ using namespace std;
 
 int main()
 {
-    string input="data.txt";
-	string output="result.txt";
+    string inputFilePath="data.txt";
+	string outputFilePath="result.txt";
 	size_t n;
-	double *ptr1=nullptr;
-	double *ptr2=nullptr;
-	unsigned int S=0;
-	double V=0;
+	double *w=nullptr;
+	double *r=nullptr;
+	double S=0;
 	
-	if(!ImportVectors(input, n, ptr1, ptr2, S))
-		return 1;
-	double DP=DotProduct(n, ptr1, ptr2, S, V);
-	if (!ExportResult(output, n, ptr1, ptr2, S, DP, V))
-		return 1;
+	ImportVectors(inputFilePath, n, w, r, S);
+	
+	double prodotto= DotProduct(n,w,r);
+	double V=ValuePortfolio(n,S,w,r);
+	
+	ExportResult(outputFilePath,n,w,r,S,V,prodotto);
+	
+	delete[] w;
+	delete[] r;
 		
-	
 	return 0;
 }
 
